@@ -1,0 +1,31 @@
+version: 0.1.{build}.0
+clone_folder: c:\projects\$(APPVEYOR_PROJECT_NAME)
+environment:
+  TestResultsUploadURI: https://ci.appveyor.com/api/testresults/nunit/$(APPVEYOR_JOB_ID)
+  ApplicationID:
+    secure: mHB9K9ItLkpdxUR7WgBnuBiBOl3qgJT1yizvFZDOgkRxvTV5KoZJ8QuAp+F+EbV0
+  SubscriptionID:
+    secure: fhB5mHXLFRRc1/iwqCA9ibCqwg7qKqkayknhebLsM+FdlrmL80HCRm1vJYafomei
+  TenantID:
+    secure: J/my7xsOE9jewR0DDhD+EU5jeo5Bp83/nmIK8a8QI0QLoZXStCOtk1vUjVsKylW2
+  ApplicationPassword:
+    secure: zV3r4bwG65rWRfF1L23RYLj7GXVxsMdZtasCsX0+pYA=
+  BuildFolder: $(APPVEYOR_BUILD_FOLDER)
+  ProjectName: $(APPVEYOR_PROJECT_NAME)
+  ProjectID: $(APPVEYOR_POJECT_ID)
+  BuildID: $(APPVEYOR_BUILD_ID)
+matrix:
+  fast_finish: true
+install:
+  - git clone https://github.com/Microsoft/DscConfiguration.Tests
+  - ps: |
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.205 -Force | Out-Null
+        Install-Module InvokeBuild -force
+build_script:
+  - ps: |
+        if (Test-Path -Path .\.build.ps1) {
+          Invoke-Build -Summary
+        }
+        else {
+          Invoke-Build -File .\DscConfiguration.Tests\.build.ps1 -Summary
+        }
