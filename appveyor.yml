@@ -1,4 +1,4 @@
-version: 0.1.{build}.0
+version: 0.1.0.{build}
 clone_folder: c:\projects\$(APPVEYOR_PROJECT_NAME)
 environment:
   RequiredModules: xActiveDirectory,xStorage  
