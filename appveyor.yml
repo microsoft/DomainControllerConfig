@@ -1,6 +1,7 @@
 version: 0.1.{build}.0
 clone_folder: c:\projects\$(APPVEYOR_PROJECT_NAME)
 environment:
+  RequiredModules: xActiveDirectory,xStorage  
   TestResultsUploadURI: https://ci.appveyor.com/api/testresults/nunit/$(APPVEYOR_JOB_ID)
   ApplicationID:
     secure: mHB9K9ItLkpdxUR7WgBnuBiBOl3qgJT1yizvFZDOgkRxvTV5KoZJ8QuAp+F+EbV0
@@ -21,6 +22,9 @@ install:
   - ps: |
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.205 -Force | Out-Null
         Install-Module InvokeBuild -force
+        foreach ($module in $env:RequiredModules.split(',')) {
+          Install-Module $module -force
+        }
 build_script:
   - ps: |
         if (Test-Path -Path .\.build.ps1) {

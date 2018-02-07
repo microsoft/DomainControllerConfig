@@ -13,28 +13,24 @@
 
 .TAGS DSCConfiguration
 
-.LICENSEURI https://github.com/PowerShell/xActiveDirectory/blob/master/LICENSE
+.LICENSEURI https://github.com/Microsoft/DomainControllerConfig/blob/master/LICENSE
 
-.PROJECTURI http://github.com/Powershell/xActiveDirectory
+.PROJECTURI https://github.com/Microsoft/DomainControllerConfig
 
 .ICONURI 
 
+.REQUIREDMODULES xActiveDirectory,xStorage 
+
 .EXTERNALMODULEDEPENDENCIES 
 
-.REQUIREDSCRIPTS 
+.REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES 
 
 .RELEASENOTES
-https://github.com/PowerShell/xActiveDirectory/blob/master/README.md#versions
+https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versions
 
-.PRIVATEDATA OSVersions="2016-DataCenter","2016-Datacenter-Server-Core"
-
-#>
-
-#Requires -Module xActiveDirectory, xStorage
-
-<# 
+.PRIVATEDATA "2016-DataCenter","2016-Datacenter-Server-Core"
 
 .DESCRIPTION 
  Demonstrates a minimally viable domain controller configuration script
@@ -49,7 +45,8 @@ Required modules in Automation service:
   - xActiveDirectory version 2.16.0.0
   - xStorage version 3.2.0.0
 
-#> 
+#>
+Requires -Module xActiveDirectory,xStorage
 
 configuration DomainControllerConfig
 {
