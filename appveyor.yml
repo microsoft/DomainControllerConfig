@@ -27,6 +27,7 @@ install:
         }
 build_script:
   - ps: |
+        import-module -Name PowerShellGet -MinimumVersion 1.6.0
         New-ScriptFileInfo -Path c:\temp.ps1 -author test -description test -version 0.1.0.0 -guid (new-guid).guid -privatedata test -externalmoduledependencies test
         Get-Content c:\temp.ps1
         if (Test-Path -Path .\.build.ps1) {
