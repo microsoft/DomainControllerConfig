@@ -28,12 +28,12 @@ install:
         Import-Module -Name PackageManagement -MinimumVersion 1.1.7.0 -Global
         Import-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Global
         Get-Module PackageManagement | Select Name, Version
+build_script:
+  - ps: |
         Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
         foreach ($module in $env:RequiredModules.split(',')) {
           Install-Module $module -force
         }
-build_script:
-  - ps: |
         if (Test-Path -Path .\.build.ps1) {
           Invoke-Build -Summary
         }
