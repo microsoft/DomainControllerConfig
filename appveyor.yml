@@ -21,7 +21,7 @@ install:
   - git clone https://github.com/PowerShell/DscConfiguration.Tests
   - ps: |
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.205 -Force | Out-Null
-        Install-Module InvokeBuild,Pester,PSScriptAnalyzer,PackageManagement,PowerShellGet -force
+        Install-Module InvokeBuild,Pester,PSScriptAnalyzer,PackageManagement,PowerShellGet -Force -SkipPublisherCheck -Repository PSGallery -Verbose
         foreach ($module in $env:RequiredModules.split(',')) {
           Install-Module $module -force
         }
