@@ -1,7 +1,7 @@
 ﻿
 <#PSScriptInfo
 
-.VERSION 0.1.0.0
+.VERSION 0.1.0
 
 .GUID edd05043-2acc-48fa-b5b3-dab574621ba1
 
@@ -31,6 +31,10 @@
 https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versions
 
 .PRIVATEDATA "2016-DataCenter","2016-Datacenter-Server-Core"
+
+#>
+
+<#
 
 .DESCRIPTION 
  Demonstrates a minimally viable domain controller configuration script
