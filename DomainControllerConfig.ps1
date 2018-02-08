@@ -20,12 +20,6 @@
 
 .REQUIREDMODULES xActiveDirectory,xStorage 
 
-.EXTERNALMODULEDEPENDENCIES 
-
-.REQUIREDSCRIPTS
-
-.EXTERNALSCRIPTDEPENDENCIES 
-
 .RELEASENOTES
 https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versions
 
