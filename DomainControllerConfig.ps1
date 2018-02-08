@@ -45,7 +45,6 @@ Required modules in Automation service:
   - xStorage version 3.2.0.0
 
 #>
-Requires -Module xActiveDirectory,xStorage
 
 configuration DomainControllerConfig
 {
