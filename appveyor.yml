@@ -28,8 +28,6 @@ install:
         Install-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Repository PSGallery -Force
 build_script:
   - ps: |
-        Import-Module -Name PackageManagement -Version 1.1.7.0 -Global -Force -Passthru
-        Import-Module -Name PowerShellGet -Version 1.6.0 -Global -Force -Passthru
         if (Test-Path -Path .\.build.ps1) {
           Invoke-Build -Summary
         }
