@@ -21,8 +21,6 @@
 .RELEASENOTES
 https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versions
 
-.PRIVATEDATA "2016-DataCenter","2016-Datacenter-Server-Core"
-
 .DESCRIPTION 
  Demonstrates a minimally viable domain controller configuration script
  compatible with Azure Automation Desired State Configuration service.
