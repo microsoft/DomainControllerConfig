@@ -19,6 +19,8 @@
 
 .ICONURI 
 
+.REQUIREDMODULES xActiveDirectory,xStorage 
+
 .EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
@@ -27,6 +29,8 @@
 
 .RELEASENOTES
 https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versions
+
+.PRIVATEDATA "2016-DataCenter","2016-Datacenter-Server-Core"
 
 #>
 
