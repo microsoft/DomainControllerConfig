@@ -1,44 +1,87 @@
-
+﻿
 <#PSScriptInfo
 
 .VERSION 0.1.0.0
 
-.GUID 9e615a6f-ada0-454d-a314-dc4f76bf0f89
+.GUID edd05043-2acc-48fa-b5b3-dab574621ba1
 
 .AUTHOR Michael Greene
 
-.COMPANYNAME Microsoft
+.COMPANYNAME Microsoft Corporation
 
 .COPYRIGHT 
 
 .TAGS DSCConfiguration
 
-.LICENSEURI 
+.LICENSEURI https://github.com/Microsoft/DomainControllerConfig/blob/master/LICENSE
 
-.PROJECTURI 
+.PROJECTURI https://github.com/Microsoft/DomainControllerConfig
 
 .ICONURI 
 
+.REQUIREDMODULES xActiveDirectory,xStorage 
+
 .EXTERNALMODULEDEPENDENCIES 
 
-.REQUIREDSCRIPTS 
+.REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES 
 
 .RELEASENOTES
+https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versions
 
+.PRIVATEDATA "2016-DataCenter","2016-Datacenter-Server-Core"
+
+.DESCRIPTION 
+ Demonstrates a minimally viable domain controller configuration script
+ compatible with Azure Automation Desired State Configuration service.
+ 
+ Required variables in Automation service:
+  - domainName - string that will be used as the Active Directory domain
+  - domainCredential - credential to use for AD domain admin
+  - safeModeCredential - credential to use for Safe Mode recovery
+
+Required modules in Automation service:
+  - xActiveDirectory version 2.16.0.0
+  - xStorage version 3.2.0.0
 
 #>
 
-#Requires -Module xActiveDirectory
-#Requires -Module xStorage
+configuration DomainControllerConfig
+{
 
-<# 
+    $domainCredential = Get-AutomationPSCredential domainCredential
+    $safeModeCredential = Get-AutomationPSCredential safeModeCredential
 
-.DESCRIPTION 
- Demonstrates a minimally viable domain controller configuration script 
+    Import-DscResource -ModuleName @{ModuleName='xActiveDirectory';ModuleVersion='2.16.0.0';GUID='9FECD4F6-8F02-4707-99B3-539E940E9FF5'},@{ModuleName='xStorage';ModuleVersion='3.2.0.0';GUID='00d73ca1-58b5-46b7-ac1a-5bfcf5814faf'}
 
-#> 
-Param()
-
-
+    Node $AllNodes.NodeName
+    {
+        WindowsFeature ADDSInstall
+        {
+            Ensure = 'Present'
+            Name = 'AD-Domain-Services'
+        }
+        xWaitforDisk Disk2
+        {
+             DiskId = 2
+             RetryIntervalSec = 10
+             RetryCount = 30
+        }
+        xDisk DiskF
+        {
+             DiskId = 2
+             DriveLetter = 'F'
+        }
+        xADDomain Domain
+        {
+            DomainName = $Node.domainName
+            DomainAdministratorCredential = $domainCredential
+            SafemodeAdministratorPassword = $safeModeCredential
+            DatabasePath = 'F:\NTDS'
+            LogPath = 'F:\NTDS'
+            SysvolPath = 'F:\SYSVOL'
+            DependsOn = '[WindowsFeature]ADDSInstall'
+        }
+   }
+}
