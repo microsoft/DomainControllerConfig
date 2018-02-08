@@ -27,8 +27,7 @@ install:
         Remove-Item -Path 'C:\Program Files (x86)\WindowsPowerShell\Modules\PackageManagement\1.0.0.1\' -Recurse -Force
         Import-Module -Name PackageManagement -MinimumVersion 1.1.7.0 -Global
         Import-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Global
-        Get-PackageProvider -li
-        Get-Module PackageManagement -li | Select Name, Version
+        Get-Module PackageManagement | Select Name, Version
         Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
         foreach ($module in $env:RequiredModules.split(',')) {
           Install-Module $module -force
