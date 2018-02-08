@@ -22,8 +22,8 @@ install:
   - ps: |
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208 -Force | Out-Null
         Install-PackageProvider -Name PowerShellGet -MinimumVersion 1.6.0 -Force | Out-Null
-        Import-Module -Name PackageManagement -MinimumVersion 1.1.7.0
-        Import-Module -Name PowerShellGet -MinimumVersion 1.6.0
+        Import-Module -Name PackageManagement -MinimumVersion 1.1.7.0 -Global
+        Import-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Global
         Get-PackageProvider -li
         Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
         foreach ($module in $env:RequiredModules.split(',')) {
