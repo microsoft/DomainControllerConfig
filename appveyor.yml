@@ -20,12 +20,13 @@ matrix:
 install:
   - git clone https://github.com/PowerShell/DscConfiguration.Tests
   - ps: |
-        Install-PackageProvider @{Name='NuGet';MinimumVersion='2.8.5.208'},@{Name='PowerShellGet';MinimumVersion='1.6.0'} -Force
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208 -Force
+        Install-PackageProvider -Name PowerShellGet -MinimumVersion 1.6.0 -Force
         Import-PackageProvider -Name PowerShellGet -Force
         Import-Module -Name PackageManagement -MinimumVersion 1.1.7.0 -Global
         Import-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Global
         Get-PackageProvider -li
-        Get-Module PackageManagement -li
+        Get-Module PackageManagement -li        
         Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
         foreach ($module in $env:RequiredModules.split(',')) {
           Install-Module $module -force
