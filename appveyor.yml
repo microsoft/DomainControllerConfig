@@ -21,13 +21,11 @@ install:
   - git clone https://github.com/PowerShell/DscConfiguration.Tests
   - ps: |
         $null = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208 -Force
-        Install-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Repository PSGallery -Force
-        Import-Module 'C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.1.7.0\PackageManagement.psd1' -force
-        Import-Module 'C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.6.0\PowerShellGet.psd1' -force
         Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
         foreach ($module in $env:RequiredModules.split(',')) {
           Install-Module $module -force
         }
+        Install-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Repository PSGallery -Force
 build_script:
   - ps: |
         if (Test-Path -Path .\.build.ps1) {
