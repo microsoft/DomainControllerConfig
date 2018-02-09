@@ -21,10 +21,9 @@ install:
   - git clone https://github.com/PowerShell/DscConfiguration.Tests
   - ps: |
         $null = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208 -Force
-
         Install-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Repository PSGallery -Force
-        Invoke-WebRequest -UseBasicParsing -Uri https://contosodevimages.blob.core.windows.net/powershellget/PSModule.psm1 `
-          -OutFile 'C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.6.0\PSModule.psm1'
+        #Invoke-WebRequest -UseBasicParsing -Uri https://contosodevimages.blob.core.windows.net/powershellget/PSModule.psm1 `
+        #  -OutFile 'C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.6.0\PSModule.psm1'
 
           Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
           foreach ($module in $env:RequiredModules.split(',')) {
