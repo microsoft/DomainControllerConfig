@@ -53,14 +53,12 @@ Required modules in Automation service:
 
 configuration DomainControllerConfig
 {
-param(
-    [Parameter(Mandatory=$true)]
-    [pscredential]$domainCredential,
-    [Parameter(Mandatory=$true)]
-    [pscredential]$safeModeCredential
-)
+
     Import-DscResource -ModuleName 'xActiveDirectory','xStorage'
 
+    $domainCredential = Get-AutomationPSCredential $domainCredential
+    $safeModeCredential = Get-AutomationPSCredential $safeModeCredential
+    
     Node $AllNodes.NodeName
     {
         WindowsFeature ADDSInstall
@@ -91,6 +89,3 @@ param(
         }
    }
 }
-
-DomainControllerConfig -out C:\dsc
-Start-DscConfiguration -Path C:\dsc -Wait -Verbose
