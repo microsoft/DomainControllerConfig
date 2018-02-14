@@ -56,8 +56,8 @@ configuration DomainControllerConfig
 
     Import-DscResource -ModuleName 'xActiveDirectory','xStorage'
 
-    $domainCredential = Get-AutomationPSCredential $Credential
-    $safeModeCredential = Get-AutomationPSCredential $Credential
+    $domainCredential = Get-AutomationPSCredential 'Credential'
+    $safeModeCredential = Get-AutomationPSCredential 'Credential'
     
     Node $AllNodes.NodeName
     {
