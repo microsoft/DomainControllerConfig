@@ -45,6 +45,9 @@ https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versio
   - domainCredential - credential to use for AD domain admin
   - safeModeCredential - credential to use for Safe Mode recovery
 
+Require configuration for the virtual machine
+  - Must have an OS disk and a data disk for the AD database to be configured on
+
 Required modules in Automation service:
   - xActiveDirectory
   - xStorage
@@ -54,38 +57,37 @@ Required modules in Automation service:
 configuration DomainControllerConfig
 {
 
-    Import-DscResource -ModuleName 'xActiveDirectory','xStorage'
+    Import-DscResource -ModuleName 'xActiveDirectory', 'xStorage'
 
     $domainCredential = Get-AutomationPSCredential 'Credential'
     $safeModeCredential = Get-AutomationPSCredential 'Credential'
     
     Node $AllNodes.NodeName
     {
-        WindowsFeature ADDSInstall
-        {
+        WindowsFeature ADDSInstall {
             Ensure = 'Present'
-            Name = 'AD-Domain-Services'
+            Name   = 'AD-Domain-Services'
         }
         xWaitforDisk Disk2
         {
-             DiskId = 2
-             RetryIntervalSec = 10
-             RetryCount = 30
+            DiskId           = 2
+            RetryIntervalSec = 10
+            RetryCount       = 30
         }
         xDisk DiskF
         {
-             DiskId = 2
-             DriveLetter = 'F'
+            DiskId      = 2
+            DriveLetter = 'F'
         }
         xADDomain Domain
         {
-            DomainName = $Node.domainName
+            DomainName                    = $Node.domainName
             DomainAdministratorCredential = $domainCredential
             SafemodeAdministratorPassword = $safeModeCredential
-            DatabasePath = $Node.DatabasePath
-            LogPath = $Node.LogPath
-            SysvolPath = $Node.SysvolPath
-            DependsOn = '[WindowsFeature]ADDSInstall'
+            DatabasePath                  = $Node.DatabasePath
+            LogPath                       = $Node.LogPath
+            SysvolPath                    = $Node.SysvolPath
+            DependsOn                     = '[WindowsFeature]ADDSInstall'
         }
-   }
+    }
 }
