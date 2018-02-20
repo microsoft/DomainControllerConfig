@@ -53,11 +53,19 @@ Required modules in Automation service:
 
 configuration DomainControllerConfig
 {
+param(
+    [PSCredential]$domainCredential,
+    [PSCredential]$safeModeCredential
+)
 
     Import-DscResource -ModuleName 'xActiveDirectory','xStorage'
 
-    $domainCredential = Get-AutomationPSCredential 'Credential'
-    $safeModeCredential = Get-AutomationPSCredential 'Credential'
+    if (!$domainCredential) {
+        $domainCredential = Get-AutomationPSCredential 'Credential'
+    }
+    if (!$safeModeCredential) {
+        $safeModeCredential = Get-AutomationPSCredential 'Credential'
+    }
     
     Node $AllNodes.NodeName
     {
@@ -76,6 +84,7 @@ configuration DomainControllerConfig
         {
              DiskId = 2
              DriveLetter = 'F'
+             DependsOn = [xWaitforDisk]'Disk2'
         }
         xADDomain Domain
         {
@@ -85,7 +94,7 @@ configuration DomainControllerConfig
             DatabasePath = $Node.DatabasePath
             LogPath = $Node.LogPath
             SysvolPath = $Node.SysvolPath
-            DependsOn = '[WindowsFeature]ADDSInstall'
+            DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]Disk2'
         }
    }
 }
