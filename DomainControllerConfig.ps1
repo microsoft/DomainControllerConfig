@@ -84,7 +84,7 @@ param(
         {
              DiskId = 2
              DriveLetter = 'F'
-             DependsOn = [xWaitforDisk]'Disk2'
+             DependsOn = '[xWaitforDisk]Disk2'
         }
         xADDomain Domain
         {
