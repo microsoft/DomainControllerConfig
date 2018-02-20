@@ -94,7 +94,7 @@ param(
             DatabasePath = $Node.DatabasePath
             LogPath = $Node.LogPath
             SysvolPath = $Node.SysvolPath
-            DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]Disk2'
+            DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF'
         }
    }
 }
