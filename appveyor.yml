@@ -2,7 +2,7 @@ version: 0.1.0.{build}
 clone_folder: c:\projects\$(APPVEYOR_PROJECT_NAME)
 environment:
   DiagnoseRG: true
-  RequiredModules: xActiveDirectory,xStorage,AzureAutomationAuthoringToolkit
+  RequiredModules: xActiveDirectory,xStorage,xPendingReboot
   TestResultsUploadURI: https://ci.appveyor.com/api/testresults/nunit/$(APPVEYOR_JOB_ID)
   ApplicationID:
     secure: mHB9K9ItLkpdxUR7WgBnuBiBOl3qgJT1yizvFZDOgkRxvTV5KoZJ8QuAp+F+EbV0
@@ -23,16 +23,14 @@ install:
   - ps: |
         $null = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208 -Force
         Install-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Repository PSGallery -Force
-        
-          Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
-          foreach ($module in $env:RequiredModules.split(',')) {
-            Install-Module $module -Force -Repository PSGallery
-          }
+        Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
+        foreach ($module in $env:RequiredModules.split(',')) {
+          Install-Module $module -Force -Repository PSGallery
+        }
           
 build_script:
   - ps: |
         Import-Module -Name PowerShellGet -Version 1.6.0 -Global -Force
-  
         if (Test-Path -Path .\.build.ps1) {
           Invoke-Build -Summary
         }
