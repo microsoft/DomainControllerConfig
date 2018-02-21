@@ -48,6 +48,7 @@ https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versio
 Required modules in Automation service:
   - xActiveDirectory
   - xStorage
+  - xPendingReboot
 
 #>
 
