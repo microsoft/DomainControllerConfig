@@ -23,7 +23,7 @@ install:
   - ps: |
         $null = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.208 -Force
         Install-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Repository PSGallery -Force
-        Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
+        Install-Module InvokeBuild,Pester,PSScriptAnalyzer,PSDesiredStateConfiguration -Force -SkipPublisherCheck -Repository PSGallery
 
         # Load required modules from gallery
         foreach ($module in $env:RequiredModules.split(',')) {
@@ -31,6 +31,7 @@ install:
         }
 build_script:
   - ps: |
+        Import-Module -Global -Name PowerShellGet -MinimumVersion 1.6.0 -Force
         if (Test-Path -Path .\.build.ps1) {
           Invoke-Build -Summary
         }
