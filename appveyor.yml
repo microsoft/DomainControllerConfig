@@ -25,6 +25,10 @@ install:
         Install-Module -Name PowerShellGet -MinimumVersion 1.6.0 -Repository PSGallery -Force
         Install-Module InvokeBuild,Pester,PSScriptAnalyzer -Force -SkipPublisherCheck -Repository PSGallery
 
+        # Load required modules from gallery
+        foreach ($module in $env:RequiredModules) {
+            Install-Module $module -Force -Repository PSGallery
+        }
 build_script:
   - ps: |
         if (Test-Path -Path .\.build.ps1) {
