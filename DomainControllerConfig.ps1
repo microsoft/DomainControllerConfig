@@ -90,6 +90,7 @@ param(
         xPendingReboot BeforeDC
         {
             Name = 'BeforeDC'
+            DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF'
         }
         xADDomain Domain
         {
@@ -108,6 +109,7 @@ param(
             ValueData = 0
             ValueType = 'Dword'
             Ensure = 'Present'
+            DependsOn = '[xADDomain]Domain'
         }
    }
 }
