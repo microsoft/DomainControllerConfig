@@ -19,7 +19,7 @@
 
 .ICONURI 
 
-.REQUIREDMODULES xActiveDirectory,xStorage 
+.REQUIREDMODULES xActiveDirectory,xStorage,xPendingReboot
 
 .EXTERNALMODULEDEPENDENCIES 
 
@@ -58,7 +58,7 @@ param(
     [PSCredential]$safeModeCredential
 )
 
-    Import-DscResource -ModuleName 'xActiveDirectory','xStorage'
+    Import-DscResource -ModuleName 'xActiveDirectory','xStorage','xPendingReboot'
 
     if (!$domainCredential) {
         $domainCredential = Get-AutomationPSCredential 'Credential'
@@ -86,6 +86,10 @@ param(
              DriveLetter = 'F'
              DependsOn = '[xWaitforDisk]Disk2'
         }
+        xPendingReboot BeforeDC
+        {
+            Ensure = 'Present'
+        }
         xADDomain Domain
         {
             DomainName = $Node.domainName
@@ -94,7 +98,7 @@ param(
             DatabasePath = $Node.DatabasePath
             LogPath = $Node.LogPath
             SysvolPath = $Node.SysvolPath
-            DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF'
+            DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF','[xPendingReboot]BeforeDC'
         }
    }
 }
