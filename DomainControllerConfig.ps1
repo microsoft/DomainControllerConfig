@@ -88,7 +88,7 @@ param(
         }
         xPendingReboot BeforeDC
         {
-            Ensure = 'Present'
+            Name = 'BeforeDC'
         }
         xADDomain Domain
         {
