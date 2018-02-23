@@ -1,5 +1,13 @@
+# Domain Controller Configuration
 
-# Contributing
+This DSC Configuration script is in PREVIEW
+as a minimal viable product.
+The work remaining for this script includes:
+
+- Documentation including release notes
+- Integration/Acceptance tests specific to the scenario
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us

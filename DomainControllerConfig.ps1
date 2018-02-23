@@ -19,8 +19,6 @@
 
 .ICONURI 
 
-.REQUIREDMODULES xActiveDirectory,xStorage,xPendingReboot
-
 .EXTERNALMODULEDEPENDENCIES 
 
 .REQUIREDSCRIPTS
@@ -34,16 +32,22 @@ https://github.com/Microsoft/DomainControllerConfig/blob/master/README.md#versio
 
 #>
 
+#Requires -module @{ModuleName = 'xActiveDirectory';ModuleVersion = '2.17.0.0'}
+#Requires -module @{ModuleName = 'xStorage'; ModuleVersion = '3.4.0.0'}
+#Requires -module @{ModuleName = 'xPendingReboot'; ModuleVersion = '0.3.0.0'}
+
 <#
 
 .DESCRIPTION 
- Demonstrates a minimally viable domain controller configuration script
- compatible with Azure Automation Desired State Configuration service.
+Demonstrates a minimally viable domain controller configuration script
+compatible with Azure Automation Desired State Configuration service.
  
  Required variables in Automation service:
-  - domainName - string that will be used as the Active Directory domain
-  - domainCredential - credential to use for AD domain admin
-  - safeModeCredential - credential to use for Safe Mode recovery
+  - Credential to use for AD domain admin
+  - Credential to use for Safe Mode recovery
+
+Create these credential assets in Azure Automation,
+and set their names in lines 11 and 12 of the configuration script.
 
 Required modules in Automation service:
   - xActiveDirectory
@@ -55,61 +59,64 @@ Required modules in Automation service:
 configuration DomainControllerConfig
 {
 param(
-    [PSCredential]$domainCredential,
-    [PSCredential]$safeModeCredential
+    [pscredential]$domainCredential,
+    [pscredential]$safeModeCredential
 )
 
-    Import-DscResource -ModuleName 'xActiveDirectory','xStorage','xPendingReboot'
+Import-DscResource -ModuleName @{ModuleName = 'xActiveDirectory'; ModuleVersion = '2.17.0.0'}
+Import-DscResource -ModuleName @{ModuleName = 'xStorage'; ModuleVersion = '3.4.0.0'}
+Import-DscResource -ModuleName @{ModuleName = 'xPendingReboot'; ModuleVersion = '0.3.0.0'}
+Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 
-    if (!$domainCredential) {
-        $domainCredential = Get-AutomationPSCredential 'Credential'
-    }
-    if (!$safeModeCredential) {
-        $safeModeCredential = Get-AutomationPSCredential 'Credential'
+# When using with Azure Automation, modify these values to match your stored credential names
+if (!$domainCredential) {$domainCredential = Get-AutomationPSCredential 'Credential'}
+if (!$safeModeCredential) {$safeModeCredential = Get-AutomationPSCredential 'Credential'}
+
+    WindowsFeature ADDSInstall
+    {
+        Ensure = 'Present'
+        Name = 'AD-Domain-Services'
     }
     
-    Node $AllNodes.NodeName
+    xWaitforDisk Disk2
     {
-        WindowsFeature ADDSInstall
-        {
-            Ensure = 'Present'
-            Name = 'AD-Domain-Services'
-        }
-        xWaitforDisk Disk2
-        {
-             DiskId = 2
-             RetryIntervalSec = 10
-             RetryCount = 30
-        }
-        xDisk DiskF
-        {
-             DiskId = 2
-             DriveLetter = 'F'
-             DependsOn = '[xWaitforDisk]Disk2'
-        }
-        xPendingReboot BeforeDC
-        {
-            Name = 'BeforeDC'
-            DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF'
-        }
-        xADDomain Domain
-        {
-            DomainName = $Node.domainName
-            DomainAdministratorCredential = $domainCredential
-            SafemodeAdministratorPassword = $safeModeCredential
-            DatabasePath = $Node.DatabasePath
-            LogPath = $Node.LogPath
-            SysvolPath = $Node.SysvolPath
-            DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF','[xPendingReboot]BeforeDC'
-        }
-        Registry DisableNLA
-        {
-            Key = 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp'
-            ValueName = 'UserAuthentication'
-            ValueData = 0
-            ValueType = 'Dword'
-            Ensure = 'Present'
-            DependsOn = '[xADDomain]Domain'
-        }
-   }
+        DiskId = 2
+        RetryIntervalSec = 10
+        RetryCount = 30
+    }
+    
+    xDisk DiskF
+    {
+        DiskId = 2
+        DriveLetter = 'F'
+        DependsOn = '[xWaitforDisk]Disk2'
+    }
+    
+    xPendingReboot BeforeDC
+    {
+        Name = 'BeforeDC'
+        DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF'
+    }
+    
+    # Configure domain values here
+    xADDomain Domain
+    {
+        DomainName = 'contoso.local'
+        DomainAdministratorCredential = $domainCredential
+        SafemodeAdministratorPassword = $safeModeCredential
+        DatabasePath = 'F:\NTDS'
+        LogPath = 'F:\NTDS'
+        SysvolPath = 'F:\SYSVOL'
+        DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF','[xPendingReboot]BeforeDC'
+    }
+    
+    Registry DisableRDPNLA
+    {
+        Key = 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp'
+        ValueName = 'UserAuthentication'
+        ValueData = 0
+        ValueType = 'Dword'
+        Ensure = 'Present'
+        DependsOn = '[xADDomain]Domain'
+    }
 }
