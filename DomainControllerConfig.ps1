@@ -68,6 +68,8 @@ Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 $domainCredential = Get-AutomationPSCredential 'Credential'
 $safeModeCredential = Get-AutomationPSCredential 'Credential'
 
+  node localhost
+  {
     WindowsFeature ADDSInstall
     {
         Ensure = 'Present'
@@ -115,4 +117,5 @@ $safeModeCredential = Get-AutomationPSCredential 'Credential'
         Ensure = 'Present'
         DependsOn = '[xADDomain]Domain'
     }
+  }
 }
