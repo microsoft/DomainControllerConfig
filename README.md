@@ -1,5 +1,7 @@
 # Domain Controller Configuration
 
+[![Build status](https://ci.appveyor.com/api/projects/status/58qo2r0o54w2t1v9/branch/master?svg=true)](https://ci.appveyor.com/project/mgreenegit/domaincontrollerconfig/branch/master)
+
 This DSC Configuration script is in PREVIEW
 as a minimal viable product.
 The work remaining for this script includes:
