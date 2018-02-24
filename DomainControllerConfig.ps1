@@ -58,10 +58,6 @@ Required modules in Automation service:
 
 configuration DomainControllerConfig
 {
-param(
-    [pscredential]$domainCredential,
-    [pscredential]$safeModeCredential
-)
 
 Import-DscResource -ModuleName @{ModuleName = 'xActiveDirectory'; ModuleVersion = '2.17.0.0'}
 Import-DscResource -ModuleName @{ModuleName = 'xStorage'; ModuleVersion = '3.4.0.0'}
@@ -69,8 +65,8 @@ Import-DscResource -ModuleName @{ModuleName = 'xPendingReboot'; ModuleVersion = 
 Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 
 # When using with Azure Automation, modify these values to match your stored credential names
-if (!$domainCredential) {$domainCredential = Get-AutomationPSCredential 'Credential'}
-if (!$safeModeCredential) {$safeModeCredential = Get-AutomationPSCredential 'Credential'}
+$domainCredential = Get-AutomationPSCredential 'Credential'
+$safeModeCredential = Get-AutomationPSCredential 'Credential'
 
     WindowsFeature ADDSInstall
     {
