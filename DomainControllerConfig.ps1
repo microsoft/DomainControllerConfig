@@ -93,6 +93,7 @@ $safeModeCredential = Get-AutomationPSCredential 'Credential'
     xPendingReboot BeforeDC
     {
         Name = 'BeforeDC'
+        SkipCcmClientSDK = $true
         DependsOn = '[WindowsFeature]ADDSInstall','[xDisk]DiskF'
     }
     
